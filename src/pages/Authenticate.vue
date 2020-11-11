@@ -24,7 +24,7 @@
       >
         <q-tab-panel name="signup">
           <div class="row justify-center">
-            <sign-up-form></sign-up-form>
+            <sign-up-form @toggle-tab="toggleTab"></sign-up-form>
           </div>
         </q-tab-panel>
         <q-tab-panel name="signin">
@@ -65,12 +65,21 @@ export default {
   watch: {
     $route (to, from) {
       this.tab = to.params.type
+      this.getUserAttributes()
     }
   },
   data () {
     return {
       tab: this.$route.params.type
     }
+  },
+  methods: {
+    toggleTab (tab) {
+      this.tab = tab
+    }
+  },
+  async created () {
+    await this.getUserAttributes()
   }
 }
 </script>

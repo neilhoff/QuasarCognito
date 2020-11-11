@@ -4,17 +4,12 @@ Auth.configure(cognitoConfig)
 
 import { Notify } from 'quasar'
 
-function goToSignUp (next) {
+function goToSignUp (to, next) {
   Notify.create({
     message: 'You need to sign in to view this page',
-    multiLine: true,
-    type: 'negative',
-    timeout: 10000,
-    actions: [
-      { label: 'Dismiss', color: 'white', handler: () => { /* ... */ } }
-    ]
+    type: 'negative'
   })
-  next('/signup')
+  next('/auth/signup')
 }
 
 export default async ({ app, router, store, Vue }) => {
@@ -37,10 +32,11 @@ export default async ({ app, router, store, Vue }) => {
         }
       } catch (error) {
         if (error === 'not authenticated') {
-          goToSignUp(next)
+          goToSignUp(to, next)
         }
       }
+    } else {
+      next()
     }
-    next()
   })
 }

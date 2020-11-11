@@ -1,41 +1,41 @@
 export const AuthMixin = {
-  methods: {
-    async signUp () {
-      try {
-        await this.$Auth.signUp(this.newUser)
-      } catch (error) {
-        console.log('error signing up:', error)
-      }
-    },
-    async signIn () {
-      try {
-        this.$q.loading.show()
-        const user = await this.$Auth.signIn(this.currentUser.username, this.currentUser.password)
-        this.$q.loading.hide()
-        this.$store.commit('user/setAttributes', user.attributes)
-        this.$router.push({ name: 'UserProfile' })
-      } catch (error) {
-        this.$q.loading.hide()
-        console.log('error signing in', error)
-        this.$q.notify({
-          message: error.message,
-          type: 'negative'
-        })
-      }
-    },
-    signOut () {
-      try {
-        this.$store.commit('user/setAttributes', null)
-        this.$Auth.signOut()
-        this.$router.push({ name: 'SignUp' })
-      } catch (error) {
-        console.log('error signing out: ', error)
-      }
+  data () {
+    return {
+      userProfile: null
     }
   },
-  computed: {
-    userProfile () {
-      return this.$store.state.user.attributes
+  methods: {
+    async signOut () {
+      try {
+        this.$q.loading.show()
+        await this.$Auth.signOut()
+        this.$q.notify({
+          message: 'You have successfully signed out',
+          type: 'positive'
+        })
+        const currentPath = this.$router.currentRoute.fullPath
+        if (currentPath !== '/auth/signin') {
+          this.$router.push('/auth/signin')
+        } else {
+          this.$router.push('/auth/signup')
+        }
+      } catch (error) {
+        console.log('error signing out: ', error)
+        this.$q.notify({
+          message: `Error signing out: ${error}`,
+          type: 'negative'
+        })
+      } finally {
+        this.$q.loading.hide()
+      }
+    },
+    async getUserAttributes () {
+      try {
+        const { attributes } = await this.$Auth.currentAuthenticatedUser()
+        this.userProfile = attributes
+      } catch (error) {
+        this.userProfile = null
+      }
     }
   }
 }

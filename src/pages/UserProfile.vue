@@ -1,7 +1,6 @@
 <template>
   <q-page
     padding
-    v-if="userProfile"
   >
     <div class="row justify-center">
       <q-card
@@ -31,15 +30,14 @@ export default {
   mixins: [AuthMixin],
   data () {
     return {
-      user: ''
+      userProfile: {}
     }
   },
-  created () {
-    // TODO: The router isn't always redirecting to the signup page
-    // TODO: The v-if on the q-page element is also needed because otherwise it throws errors even when redirect is working
-    if (!this.$store.state.user.attributes) {
-      this.$router.push('/auth/signup')
-    }
+  methods: {
+
+  },
+  async created () {
+    await this.getUserAttributes()
   }
 }
 </script>

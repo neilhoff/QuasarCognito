@@ -124,12 +124,30 @@ export default {
   name: 'MainLayout',
   components: { EssentialLink },
   mixins: [AuthMixin],
+  watch: {
+    $route (to, from) {
+      this.getUserAttributes()
+    }
+  },
   data () {
     return {
       leftDrawerOpen: false,
       essentialLinks: linksData,
-      user: null
+      userProfile: null
     }
+  },
+  methods: {
+    async getUserAttributes () {
+      try {
+        const { attributes } = await this.$Auth.currentAuthenticatedUser()
+        this.userProfile = attributes
+      } catch (error) {
+        this.userProfile = null
+      }
+    }
+  },
+  async created () {
+    await this.getUserAttributes()
   }
 }
 </script>
