@@ -24,7 +24,7 @@
       >
         <q-tab-panel name="signup">
           <div class="row justify-center">
-            <sign-up-form @toggle-tab="toggleTab"></sign-up-form>
+            <sign-up-form @toggleTab="toggleTab"></sign-up-form>
           </div>
         </q-tab-panel>
         <q-tab-panel name="signin">

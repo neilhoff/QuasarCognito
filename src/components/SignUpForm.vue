@@ -86,6 +86,7 @@
     </q-card>
     <confirm-signup-dialog
       @closeConfirmDialog="closeConfirmDialog"
+      @toggleTab="toggleTab"
       :show-dialog="confirmDialog"
       :username="newUserName"
     />
@@ -121,8 +122,6 @@ export default {
       try {
         this.$q.loading.show()
         const result = await this.$Auth.signUp(this.newUser)
-        console.log(result)
-        console.log(result.user)
         this.newUserName = result.user.username
         this.confirmDialog = true
       } catch (error) {
@@ -133,10 +132,22 @@ export default {
         })
       } finally {
         this.$q.loading.hide()
+        this.newUser = {
+          username: '',
+          password: '',
+          attributes: {
+            email: '',
+            given_name: '',
+            family_name: ''
+          }
+        }
       }
     },
     closeConfirmDialog () {
       this.confirmDialog = false
+    },
+    toggleTab () {
+      this.$emit('toggleTab', 'signin')
     }
   }
 }
